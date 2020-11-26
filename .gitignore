@@ -43,3 +43,5 @@ cmake-build-release/
 
 # meld backup
 *.orig
+
+*.bin
