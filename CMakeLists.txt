@@ -40,7 +40,11 @@ include_directories(include)
 
 if(BUILD_DBoW2)
   # create a library
+  file(GLOB_RECURSE HEDERS_FOR_IDE
+      "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h"
+      "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp")
   add_library(DBoW2
+    ${HEDERS_FOR_IDE}
     src/BowVector.cpp
     src/FBRIEF.cpp
     src/FeatureVector.cpp
