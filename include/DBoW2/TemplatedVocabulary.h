@@ -35,6 +35,7 @@ namespace DBoW2 {
  * Generic Vocabulary
  * @param TDescriptor class of descriptor
  * @param F class of descriptor functions
+ * @param k branch factor
  */
 template <class F, int k>
 class DLL_EXPORT TemplatedVocabulary {
@@ -48,7 +49,7 @@ public:
    * @param weighting weighting type
    * @param scoring scoring type
    */
-    TemplatedVocabulary(const int _k = 10, const int L = 5,
+    TemplatedVocabulary(const int L = 5,
         const WeightingType weighting = TF_IDF, const ScoringType scoring = L1_NORM);
 
     /**
@@ -173,7 +174,7 @@ public:
    * Returns the branching factor of the tree (k)
    * @return k
    */
-    inline int getBranchingFactor() const { return m_k; }
+    inline int getBranchingFactor() const { return k; }
 
     /**
    * Returns the depth levels of the tree (L)
@@ -438,9 +439,6 @@ protected:
     }
 
 protected:
-    //! Branching factor
-    int m_k;
-
     //! Depth levels
     int m_L;
 
@@ -464,10 +462,9 @@ protected:
 // --------------------------------------------------------------------------
 
 template <class F, int k>
-TemplatedVocabulary<F, k>::TemplatedVocabulary(const int _k, const int L,
+TemplatedVocabulary<F, k>::TemplatedVocabulary(const int L,
     const WeightingType weighting, const ScoringType scoring)
-    : m_k(k)
-    , m_L(L)
+    : m_L(L)
     , m_weighting(weighting)
     , m_scoring(scoring)
     , m_scoring_object(nullptr)
@@ -568,7 +565,6 @@ template <class F, int k>
 TemplatedVocabulary<F, k>&
 TemplatedVocabulary<F, k>::operator=(const TemplatedVocabulary<F, k>& voc)
 {
-    this->m_k = voc.m_k;
     this->m_L = voc.m_L;
     this->m_scoring = voc.m_scoring;
     this->m_weighting = voc.m_weighting;
@@ -594,7 +590,7 @@ void TemplatedVocabulary<F, k>::create(
     m_words.clear();
 
     // expected_nodes = Sum_{i=0..L} ( k^i )
-    int expected_nodes = (int)((pow((double)m_k, (double)m_L + 1) - 1) / (m_k - 1));
+    int expected_nodes = (int)((pow((double)k, (double)m_L + 1) - 1) / (k - 1));
 
     m_nodes.reserve(expected_nodes); // avoid allocations when creating the tree
 
@@ -620,7 +616,6 @@ template <class F, int k>
 void TemplatedVocabulary<F, k>::create(const std::vector<std::vector<TDescriptor>>& training_features,
     const int _k, const int L)
 {
-    m_k = _k;
     m_L = L;
 
     create(training_features);
@@ -633,7 +628,6 @@ void TemplatedVocabulary<F, k>::create(const std::vector<std::vector<TDescriptor
     const int _k, const int L,
     const WeightingType weighting, const ScoringType scoring)
 {
-    m_k = k;
     m_L = L;
     m_weighting = weighting;
     m_scoring = scoring;
@@ -674,15 +668,15 @@ void TemplatedVocabulary<F, k>::HKmeansStep(const NodeId parent_id, const std::v
     std::vector<std::vector<unsigned int>> groups; // groups[i] = [j1, j2, ...]
     // j1, j2, ... indices of descriptors associated to cluster i
 
-    clusters.reserve(m_k);
-    groups.reserve(m_k);
+    clusters.reserve(k);
+    groups.reserve(k);
 
     //const int msizes[] = { m_k, descriptors.size() };
     //cv::SparseMat assoc(2, msizes, CV_8U);
     //cv::SparseMat last_assoc(2, msizes, CV_8U);
     //! / assoc.row(cluster_idx).col(descriptor_idx) = 1 iif associated
 
-    if ((int)descriptors.size() <= m_k) {
+    if ((int)descriptors.size() <= k) {
         // trivial case: one cluster per feature
         groups.resize(descriptors.size());
 
@@ -848,7 +842,7 @@ void TemplatedVocabulary<F, k>::initiateClustersKMpp(
     //    clustering.
 
     clusters.resize(0);
-    clusters.reserve(m_k);
+    clusters.reserve(k);
     std::vector<double> min_dists(pfeatures.size(), std::numeric_limits<double>::max());
 
     // 1.
@@ -866,7 +860,7 @@ void TemplatedVocabulary<F, k>::initiateClustersKMpp(
         *dit = F::distance(*(*fit), clusters.back());
     }
 
-    while ((int)clusters.size() < m_k) {
+    while ((int)clusters.size() < k) {
         // 2.
         dit = min_dists.begin();
         for (fit = pfeatures.begin(); fit != pfeatures.end(); ++fit, ++dit) {
@@ -915,7 +909,7 @@ void TemplatedVocabulary<F, k>::createWords()
     m_words.resize(0);
 
     if (!m_nodes.empty()) {
-        m_words.reserve((int)pow((double)m_k, (double)m_L));
+        m_words.reserve((int)pow((double)k, (double)m_L));
 
         typename std::vector<Node>::iterator nit;
 
@@ -1246,7 +1240,7 @@ void TemplatedVocabulary<F, k>::getWordsFromNode(const NodeId nid, std::vector<W
     if (m_nodes[nid].isLeaf()) {
         words.push_back(m_nodes[nid].word_id);
     } else {
-        words.reserve(m_k); // ^1, ^2, ...
+        words.reserve(k); // ^1, ^2, ...
 
         std::vector<NodeId> parents;
         parents.push_back(nid);
@@ -1306,13 +1300,14 @@ void TemplatedVocabulary<F, k>::loadFromTextFile(const std::string& filename)
     getline(ifs, s);
     std::stringstream ss;
     ss << s;
-    ss >> m_k;
+    int _k;
+    ss >> _k;
     ss >> m_L;
     int n1, n2;
     ss >> n1;
     ss >> n2;
 
-    if (m_k < 0 || 20 < m_k || m_L < 1 || 10 < m_L || n1 < 0 || 5 < n1 || n2 < 0 || 3 < n2) {
+    if (k != _k || m_L < 1 || 10 < m_L || n1 < 0 || 5 < n1 || n2 < 0 || 3 < n2) {
         throw std::string("Vocabulary loading failed");
     }
 
@@ -1320,10 +1315,10 @@ void TemplatedVocabulary<F, k>::loadFromTextFile(const std::string& filename)
     m_weighting = static_cast<WeightingType>(n2);
     createScoringObject();
 
-    const auto expected_nodes = static_cast<int>((std::pow(static_cast<double>(m_k), static_cast<double>(m_L) + 1.0) - 1) / (m_k - 1));
+    const auto expected_nodes = static_cast<int>((std::pow(static_cast<double>(k), static_cast<double>(m_L) + 1.0) - 1) / (k - 1));
     m_nodes.reserve(expected_nodes);
 
-    m_words.reserve(std::pow(static_cast<double>(m_k), static_cast<double>(m_L) + 1.0));
+    m_words.reserve(std::pow(static_cast<double>(k), static_cast<double>(m_L) + 1.0));
 
     m_nodes.resize(1);
     m_nodes.at(0).id = 0;
@@ -1366,7 +1361,7 @@ void TemplatedVocabulary<F, k>::loadFromTextFile(const std::string& filename)
             m_nodes.at(n_id).word_id = w_id;
             m_words.at(w_id) = &m_nodes.at(n_id);
         } else {
-            m_nodes.at(n_id).children.reserve(m_k);
+            m_nodes.at(n_id).children.reserve(k);
         }
     }
 }
@@ -1383,7 +1378,7 @@ void TemplatedVocabulary<F, k>::saveToTextFile(const std::string& filename) cons
         throw std::string("Could not open file: ") + filename;
     }
 
-    ofs << m_k << " " << m_L << " "
+    ofs << k << " " << m_L << " "
         << " " << m_scoring << " " << m_weighting << std::endl;
 
     for (size_t i = 1; i < m_nodes.size(); ++i) {
@@ -1418,14 +1413,17 @@ void TemplatedVocabulary<F, k>::loadFromBinaryFile(const std::string& filename)
     unsigned int n_nodes, node_size;
     ifs.read((char*)&n_nodes, sizeof(n_nodes));
     ifs.read((char*)&node_size, sizeof(node_size));
-    ifs.read((char*)&m_k, sizeof(m_k));
+    int _k;
+    ifs.read((char*)&_k, sizeof(_k));
+    if (k != _k)
+        throw std::runtime_error("k from vocabulary mismatch");
     ifs.read((char*)&m_L, sizeof(m_L));
     ifs.read((char*)&m_scoring, sizeof(m_scoring));
     ifs.read((char*)&m_weighting, sizeof(m_weighting));
     createScoringObject();
 
     m_words.clear();
-    m_words.reserve(std::pow(static_cast<double>(m_k), static_cast<double>(m_L) + 1.0));
+    m_words.reserve(std::pow(static_cast<double>(k), static_cast<double>(m_L) + 1.0));
 
     m_nodes.clear();
     m_nodes.resize(n_nodes);
@@ -1452,7 +1450,7 @@ void TemplatedVocabulary<F, k>::loadFromBinaryFile(const std::string& filename)
             m_nodes.at(n_id).word_id = w_id;
             m_words.at(w_id) = &m_nodes.at(n_id);
         } else {
-            m_nodes.at(n_id).children.reserve(m_k);
+            m_nodes.at(n_id).children.reserve(k);
         }
 
         ++n_id;
@@ -1483,7 +1481,8 @@ void TemplatedVocabulary<F, k>::saveToBinaryFile(const std::string& filename) co
 
     ofs.write((char*)&n_nodes, sizeof(n_nodes));
     ofs.write((char*)&node_size, sizeof(node_size));
-    ofs.write((char*)&m_k, sizeof(m_k));
+    int _k = k;
+    ofs.write((char*)&_k, sizeof(_k));
     ofs.write((char*)&m_L, sizeof(m_L));
     ofs.write((char*)&m_scoring, sizeof(m_scoring));
     ofs.write((char*)&m_weighting, sizeof(m_weighting));
@@ -1564,7 +1563,7 @@ void TemplatedVocabulary<F, k>::save(cv::FileStorage& f,
 
     f << name << "{";
 
-    f << "k" << m_k;
+    f << "k" << k;
     f << "L" << m_L;
     f << "scoringType" << m_scoring;
     f << "weightingType" << m_weighting;
@@ -1633,7 +1632,7 @@ void TemplatedVocabulary<F, k>::load(const cv::FileStorage& fs,
 
     cv::FileNode fvoc = fs[name];
 
-    m_k = (int)fvoc["k"];
+    //m_k = (int)fvoc["k"];
     m_L = (int)fvoc["L"];
     m_scoring = (ScoringType)((int)fvoc["scoringType"]);
     m_weighting = (WeightingType)((int)fvoc["weightingType"]);
