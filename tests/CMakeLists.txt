@@ -1,0 +1,2 @@
+add_executable(LoadVocabulary LoadVocabulary.cpp)
+target_link_libraries(LoadVocabulary DBoW2)

@@ -4,6 +4,7 @@ project(DBoW2 CXX C)
 
 # define build options
 option(BUILD_UTILS "Build utility executables" ON)
+option(BUILD_TESTS "Build tests" ON)
 option(BUILD_SHARED_LIBS "Build DBoW2 as a shared library" OFF)
 
 # define build types
@@ -67,4 +68,8 @@ install(FILES ${PROJECT_BINARY_DIR}/DBoW2Config.cmake
 # build utilities
 if(BUILD_UTILS)
     add_subdirectory(util)
+endif()
+
+if(BUILD_TESTS)
+    add_subdirectory(tests)
 endif()
