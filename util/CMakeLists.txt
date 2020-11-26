@@ -1,0 +1,2 @@
+add_executable(ConvertORBVocabrary ConvertORBVocabrary.cpp)
+target_link_libraries(ConvertORBVocabrary PRIVATE DBoW2)

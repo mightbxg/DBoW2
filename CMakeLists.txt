@@ -66,19 +66,5 @@ install(FILES ${PROJECT_BINARY_DIR}/DBoW2Config.cmake
 
 # build utilities
 if(BUILD_UTILS)
-    # create a executable
-    add_executable(ConvertORBVocabrary util/ConvertORBVocabrary.cpp)
-
-    # set compile options
-    target_compile_options(ConvertORBVocabrary PRIVATE
-      $<$<OR:$<CXX_COMPILER_ID:MSVC>>:
-        /W4 /MT$<$<CONFIG:Debug>:d>>
-      $<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:
-        -Wall -Wextra -pedantic $<$<CONFIG:Debug>:-Og> $<$<CONFIG:Release>:-O3>>)
-
-    # include libraries
-    target_include_directories(ConvertORBVocabrary PRIVATE ${OpenCV_INCLUDE_DIRS})
-
-    # link libraries
-    target_link_libraries(ConvertORBVocabrary PRIVATE DBoW2 ${OpenCV_LIBS})
+    add_subdirectory(util)
 endif()
