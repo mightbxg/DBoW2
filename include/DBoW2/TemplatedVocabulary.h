@@ -36,9 +36,11 @@ namespace DBoW2 {
  * @param TDescriptor class of descriptor
  * @param F class of descriptor functions
  */
-template <class TDescriptor, class F>
+template <class F>
 class DLL_EXPORT TemplatedVocabulary {
 public:
+    using TDescriptor = typename F::TDescriptor;
+
     /**
    * Initiates an empty vocabulary
    * @param k branching factor
@@ -65,7 +67,7 @@ public:
    * Copy constructor
    * @param voc
    */
-    TemplatedVocabulary(const TemplatedVocabulary<TDescriptor, F>& voc);
+    TemplatedVocabulary(const TemplatedVocabulary<F>& voc);
 
     /**
    * Destructor
@@ -78,7 +80,7 @@ public:
    * @param voc
    * @return reference to this vocabulary
    */
-    TemplatedVocabulary<TDescriptor, F>& operator=(const TemplatedVocabulary<TDescriptor, F>& voc);
+    TemplatedVocabulary<F>& operator=(const TemplatedVocabulary<F>& voc);
 
     /**
    * Creates a vocabulary from the training features with the already
@@ -461,8 +463,8 @@ protected:
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-TemplatedVocabulary<TDescriptor, F>::TemplatedVocabulary(const int k, const int L,
+template <class F>
+TemplatedVocabulary<F>::TemplatedVocabulary(const int k, const int L,
     const WeightingType weighting, const ScoringType scoring)
     : m_k(k)
     , m_L(L)
@@ -475,8 +477,8 @@ TemplatedVocabulary<TDescriptor, F>::TemplatedVocabulary(const int k, const int 
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-TemplatedVocabulary<TDescriptor, F>::TemplatedVocabulary(const std::string& filename)
+template <class F>
+TemplatedVocabulary<F>::TemplatedVocabulary(const std::string& filename)
     : m_scoring_object(nullptr)
 {
     load(filename);
@@ -484,8 +486,8 @@ TemplatedVocabulary<TDescriptor, F>::TemplatedVocabulary(const std::string& file
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-TemplatedVocabulary<TDescriptor, F>::TemplatedVocabulary(const char* filename)
+template <class F>
+TemplatedVocabulary<F>::TemplatedVocabulary(const char* filename)
     : m_scoring_object(nullptr)
 {
     load(filename);
@@ -493,8 +495,8 @@ TemplatedVocabulary<TDescriptor, F>::TemplatedVocabulary(const char* filename)
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-void TemplatedVocabulary<TDescriptor, F>::createScoringObject()
+template <class F>
+void TemplatedVocabulary<F>::createScoringObject()
 {
     delete m_scoring_object;
     m_scoring_object = nullptr;
@@ -528,8 +530,8 @@ void TemplatedVocabulary<TDescriptor, F>::createScoringObject()
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-void TemplatedVocabulary<TDescriptor, F>::setScoringType(ScoringType type)
+template <class F>
+void TemplatedVocabulary<F>::setScoringType(ScoringType type)
 {
     m_scoring = type;
     createScoringObject();
@@ -537,17 +539,17 @@ void TemplatedVocabulary<TDescriptor, F>::setScoringType(ScoringType type)
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-void TemplatedVocabulary<TDescriptor, F>::setWeightingType(WeightingType type)
+template <class F>
+void TemplatedVocabulary<F>::setWeightingType(WeightingType type)
 {
     this->m_weighting = type;
 }
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-TemplatedVocabulary<TDescriptor, F>::TemplatedVocabulary(
-    const TemplatedVocabulary<TDescriptor, F>& voc)
+template <class F>
+TemplatedVocabulary<F>::TemplatedVocabulary(
+    const TemplatedVocabulary<F>& voc)
     : m_scoring_object(nullptr)
 {
     *this = voc;
@@ -555,17 +557,17 @@ TemplatedVocabulary<TDescriptor, F>::TemplatedVocabulary(
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-TemplatedVocabulary<TDescriptor, F>::~TemplatedVocabulary()
+template <class F>
+TemplatedVocabulary<F>::~TemplatedVocabulary()
 {
     delete m_scoring_object;
 }
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-TemplatedVocabulary<TDescriptor, F>&
-TemplatedVocabulary<TDescriptor, F>::operator=(const TemplatedVocabulary<TDescriptor, F>& voc)
+template <class F>
+TemplatedVocabulary<F>&
+TemplatedVocabulary<F>::operator=(const TemplatedVocabulary<F>& voc)
 {
     this->m_k = voc.m_k;
     this->m_L = voc.m_L;
@@ -585,8 +587,8 @@ TemplatedVocabulary<TDescriptor, F>::operator=(const TemplatedVocabulary<TDescri
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-void TemplatedVocabulary<TDescriptor, F>::create(
+template <class F>
+void TemplatedVocabulary<F>::create(
     const std::vector<std::vector<TDescriptor>>& training_features)
 {
     m_nodes.clear();
@@ -615,8 +617,8 @@ void TemplatedVocabulary<TDescriptor, F>::create(
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-void TemplatedVocabulary<TDescriptor, F>::create(const std::vector<std::vector<TDescriptor>>& training_features,
+template <class F>
+void TemplatedVocabulary<F>::create(const std::vector<std::vector<TDescriptor>>& training_features,
     const int k, const int L)
 {
     m_k = k;
@@ -627,8 +629,8 @@ void TemplatedVocabulary<TDescriptor, F>::create(const std::vector<std::vector<T
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-void TemplatedVocabulary<TDescriptor, F>::create(const std::vector<std::vector<TDescriptor>>& training_features,
+template <class F>
+void TemplatedVocabulary<F>::create(const std::vector<std::vector<TDescriptor>>& training_features,
     const int k, const int L,
     const WeightingType weighting, const ScoringType scoring)
 {
@@ -643,8 +645,8 @@ void TemplatedVocabulary<TDescriptor, F>::create(const std::vector<std::vector<T
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-void TemplatedVocabulary<TDescriptor, F>::getFeatures(const std::vector<std::vector<TDescriptor>>& training_features,
+template <class F>
+void TemplatedVocabulary<F>::getFeatures(const std::vector<std::vector<TDescriptor>>& training_features,
     std::vector<pDescriptor>& features) const
 {
     features.resize(0);
@@ -661,8 +663,8 @@ void TemplatedVocabulary<TDescriptor, F>::getFeatures(const std::vector<std::vec
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-void TemplatedVocabulary<TDescriptor, F>::HKmeansStep(const NodeId parent_id, const std::vector<pDescriptor>& descriptors,
+template <class F>
+void TemplatedVocabulary<F>::HKmeansStep(const NodeId parent_id, const std::vector<pDescriptor>& descriptors,
     const int current_level)
 {
     if (descriptors.empty())
@@ -821,8 +823,8 @@ void TemplatedVocabulary<TDescriptor, F>::HKmeansStep(const NodeId parent_id, co
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-void TemplatedVocabulary<TDescriptor, F>::initiateClusters(const std::vector<pDescriptor>& descriptors,
+template <class F>
+void TemplatedVocabulary<F>::initiateClusters(const std::vector<pDescriptor>& descriptors,
     std::vector<TDescriptor>& clusters) const
 {
     initiateClustersKMpp(descriptors, clusters);
@@ -830,8 +832,8 @@ void TemplatedVocabulary<TDescriptor, F>::initiateClusters(const std::vector<pDe
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-void TemplatedVocabulary<TDescriptor, F>::initiateClustersKMpp(
+template <class F>
+void TemplatedVocabulary<F>::initiateClustersKMpp(
     const std::vector<pDescriptor>& pfeatures,
     std::vector<TDescriptor>& clusters) const
 {
@@ -908,8 +910,8 @@ void TemplatedVocabulary<TDescriptor, F>::initiateClustersKMpp(
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-void TemplatedVocabulary<TDescriptor, F>::createWords()
+template <class F>
+void TemplatedVocabulary<F>::createWords()
 {
     m_words.resize(0);
 
@@ -930,8 +932,8 @@ void TemplatedVocabulary<TDescriptor, F>::createWords()
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-void TemplatedVocabulary<TDescriptor, F>::setNodeWeights(const std::vector<std::vector<TDescriptor>>& training_features)
+template <class F>
+void TemplatedVocabulary<F>::setNodeWeights(const std::vector<std::vector<TDescriptor>>& training_features)
 {
     const unsigned int NWords = m_words.size();
     const unsigned int NDocs = training_features.size();
@@ -977,24 +979,24 @@ void TemplatedVocabulary<TDescriptor, F>::setNodeWeights(const std::vector<std::
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-inline unsigned int TemplatedVocabulary<TDescriptor, F>::size() const
+template <class F>
+inline unsigned int TemplatedVocabulary<F>::size() const
 {
     return m_words.size();
 }
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-inline bool TemplatedVocabulary<TDescriptor, F>::empty() const
+template <class F>
+inline bool TemplatedVocabulary<F>::empty() const
 {
     return m_words.empty();
 }
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-float TemplatedVocabulary<TDescriptor, F>::getEffectiveLevels() const
+template <class F>
+float TemplatedVocabulary<F>::getEffectiveLevels() const
 {
     long sum = 0;
     typename std::vector<Node*>::const_iterator wit;
@@ -1010,24 +1012,24 @@ float TemplatedVocabulary<TDescriptor, F>::getEffectiveLevels() const
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-TDescriptor TemplatedVocabulary<TDescriptor, F>::getWord(WordId wid) const
+template <class F>
+typename TemplatedVocabulary<F>::TDescriptor TemplatedVocabulary<F>::getWord(WordId wid) const
 {
     return m_words[wid]->descriptor;
 }
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-WordValue TemplatedVocabulary<TDescriptor, F>::getWordWeight(WordId wid) const
+template <class F>
+WordValue TemplatedVocabulary<F>::getWordWeight(WordId wid) const
 {
     return m_words[wid]->weight;
 }
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-WordId TemplatedVocabulary<TDescriptor, F>::transform(const TDescriptor& feature) const
+template <class F>
+WordId TemplatedVocabulary<F>::transform(const TDescriptor& feature) const
 {
     if (empty()) {
         return 0;
@@ -1040,8 +1042,8 @@ WordId TemplatedVocabulary<TDescriptor, F>::transform(const TDescriptor& feature
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-void TemplatedVocabulary<TDescriptor, F>::transform(const std::vector<TDescriptor>& features, BowVector& v) const
+template <class F>
+void TemplatedVocabulary<F>::transform(const std::vector<TDescriptor>& features, BowVector& v) const
 {
     v.clear();
 
@@ -1096,8 +1098,8 @@ void TemplatedVocabulary<TDescriptor, F>::transform(const std::vector<TDescripto
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-void TemplatedVocabulary<TDescriptor, F>::transform(const std::vector<TDescriptor>& features,
+template <class F>
+void TemplatedVocabulary<F>::transform(const std::vector<TDescriptor>& features,
     BowVector& v, FeatureVector& fv, const int levelsup) const
 {
     v.clear();
@@ -1162,16 +1164,16 @@ void TemplatedVocabulary<TDescriptor, F>::transform(const std::vector<TDescripto
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-inline double TemplatedVocabulary<TDescriptor, F>::score(const BowVector& v1, const BowVector& v2) const
+template <class F>
+inline double TemplatedVocabulary<F>::score(const BowVector& v1, const BowVector& v2) const
 {
     return m_scoring_object->score(v1, v2);
 }
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-void TemplatedVocabulary<TDescriptor, F>::transform(const TDescriptor& feature, WordId& id) const
+template <class F>
+void TemplatedVocabulary<F>::transform(const TDescriptor& feature, WordId& id) const
 {
     WordValue weight;
     transform(feature, id, weight);
@@ -1179,8 +1181,8 @@ void TemplatedVocabulary<TDescriptor, F>::transform(const TDescriptor& feature, 
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-void TemplatedVocabulary<TDescriptor, F>::transform(const TDescriptor& feature, WordId& word_id, WordValue& weight,
+template <class F>
+void TemplatedVocabulary<F>::transform(const TDescriptor& feature, WordId& word_id, WordValue& weight,
     NodeId* nid, const int levelsup) const
 {
     // propagate the feature down the tree
@@ -1223,8 +1225,8 @@ void TemplatedVocabulary<TDescriptor, F>::transform(const TDescriptor& feature, 
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-NodeId TemplatedVocabulary<TDescriptor, F>::getParentNode(const WordId wid, int levelsup) const
+template <class F>
+NodeId TemplatedVocabulary<F>::getParentNode(const WordId wid, int levelsup) const
 {
     NodeId ret = m_words[wid]->id; // node id
     while (levelsup > 0 && ret != 0) // ret == 0 --> root
@@ -1237,8 +1239,8 @@ NodeId TemplatedVocabulary<TDescriptor, F>::getParentNode(const WordId wid, int 
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-void TemplatedVocabulary<TDescriptor, F>::getWordsFromNode(const NodeId nid, std::vector<WordId>& words) const
+template <class F>
+void TemplatedVocabulary<F>::getWordsFromNode(const NodeId nid, std::vector<WordId>& words) const
 {
     words.clear();
 
@@ -1272,8 +1274,8 @@ void TemplatedVocabulary<TDescriptor, F>::getWordsFromNode(const NodeId nid, std
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-int TemplatedVocabulary<TDescriptor, F>::stopWords(const double minWeight)
+template <class F>
+int TemplatedVocabulary<F>::stopWords(const double minWeight)
 {
     int c = 0;
     typename std::vector<Node*>::iterator wit;
@@ -1288,8 +1290,8 @@ int TemplatedVocabulary<TDescriptor, F>::stopWords(const double minWeight)
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-void TemplatedVocabulary<TDescriptor, F>::loadFromTextFile(const std::string& filename)
+template <class F>
+void TemplatedVocabulary<F>::loadFromTextFile(const std::string& filename)
 {
     std::ifstream ifs;
     ifs.open(filename.c_str());
@@ -1372,8 +1374,8 @@ void TemplatedVocabulary<TDescriptor, F>::loadFromTextFile(const std::string& fi
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-void TemplatedVocabulary<TDescriptor, F>::saveToTextFile(const std::string& filename) const
+template <class F>
+void TemplatedVocabulary<F>::saveToTextFile(const std::string& filename) const
 {
     std::ofstream ofs;
     ofs.open(filename.c_str(), std::ios_base::out);
@@ -1404,8 +1406,8 @@ void TemplatedVocabulary<TDescriptor, F>::saveToTextFile(const std::string& file
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-void TemplatedVocabulary<TDescriptor, F>::loadFromBinaryFile(const std::string& filename)
+template <class F>
+void TemplatedVocabulary<F>::loadFromBinaryFile(const std::string& filename)
 {
     std::ifstream ifs;
     ifs.open(filename.c_str(), std::ios_base::in | std::ios::binary);
@@ -1467,8 +1469,8 @@ void TemplatedVocabulary<TDescriptor, F>::loadFromBinaryFile(const std::string& 
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-void TemplatedVocabulary<TDescriptor, F>::saveToBinaryFile(const std::string& filename) const
+template <class F>
+void TemplatedVocabulary<F>::saveToBinaryFile(const std::string& filename) const
 {
     std::ofstream ofs;
     ofs.open(filename.c_str(), std::ios_base::out | std::ios::binary);
@@ -1505,8 +1507,8 @@ void TemplatedVocabulary<TDescriptor, F>::saveToBinaryFile(const std::string& fi
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-void TemplatedVocabulary<TDescriptor, F>::save(const std::string& filename) const
+template <class F>
+void TemplatedVocabulary<F>::save(const std::string& filename) const
 {
     cv::FileStorage fs(filename.c_str(), cv::FileStorage::WRITE);
     if (!fs.isOpened())
@@ -1517,8 +1519,8 @@ void TemplatedVocabulary<TDescriptor, F>::save(const std::string& filename) cons
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-void TemplatedVocabulary<TDescriptor, F>::load(const std::string& filename)
+template <class F>
+void TemplatedVocabulary<F>::load(const std::string& filename)
 {
     cv::FileStorage fs(filename.c_str(), cv::FileStorage::READ);
     if (!fs.isOpened())
@@ -1529,8 +1531,8 @@ void TemplatedVocabulary<TDescriptor, F>::load(const std::string& filename)
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-void TemplatedVocabulary<TDescriptor, F>::save(cv::FileStorage& f,
+template <class F>
+void TemplatedVocabulary<F>::save(cv::FileStorage& f,
     const std::string& name) const
 {
     // Format YAML:
@@ -1623,8 +1625,8 @@ void TemplatedVocabulary<TDescriptor, F>::save(cv::FileStorage& f,
 
 // --------------------------------------------------------------------------
 
-template <class TDescriptor, class F>
-void TemplatedVocabulary<TDescriptor, F>::load(const cv::FileStorage& fs,
+template <class F>
+void TemplatedVocabulary<F>::load(const cv::FileStorage& fs,
     const std::string& name)
 {
     m_words.clear();
@@ -1680,9 +1682,9 @@ void TemplatedVocabulary<TDescriptor, F>::load(const cv::FileStorage& fs,
  * @param os stream to write to
  * @param voc
  */
-template <class TDescriptor, class F>
+template <class F>
 std::ostream& operator<<(std::ostream& os,
-    const TemplatedVocabulary<TDescriptor, F>& voc)
+    const TemplatedVocabulary<F>& voc)
 {
     os << "Vocabulary: k = " << voc.getBranchingFactor()
        << ", L = " << voc.getDepthLevels()
