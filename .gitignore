@@ -1,11 +1,12 @@
-build/
+/build*/
+/.vscode/
 devel/
 lib/
 .idea/
 cmake-build-debug/
 cmake-build-release/
 */.python-version
-*.user
+*.user*
 
 # Prerequisites
 *.d
@@ -39,3 +40,6 @@ cmake-build-release/
 *.exe
 *.out
 *.app
+
+# meld backup
+*.orig
