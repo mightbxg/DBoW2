@@ -9,13 +9,13 @@
 #ifndef __D_T_DBOW2__
 #define __D_T_DBOW2__
 
-#include "DBoW2/TemplatedVocabulary.h"
-#include "DBoW2/TemplatedDatabase.h"
 #include "DBoW2/BowVector.h"
-#include "DBoW2/FeatureVector.h"
-#include "DBoW2/QueryResults.h"
 #include "DBoW2/FBRIEF.h"
 #include "DBoW2/FORB.h"
+#include "DBoW2/FeatureVector.h"
+#include "DBoW2/QueryResults.h"
+#include "DBoW2/TemplatedDatabase.h"
+#include "DBoW2/TemplatedVocabulary.h"
 
 //! ORB Vocabulary
 using OrbVocabulary = DBoW2::TemplatedVocabulary<DBoW2::FORB::TDescriptor, DBoW2::FORB>;
