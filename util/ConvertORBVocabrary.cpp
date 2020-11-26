@@ -4,7 +4,7 @@
 #include "DBoW2/FORB.h"
 #include "DBoW2/TemplatedVocabulary.h"
 
-typedef DBoW2::TemplatedVocabulary<DBoW2::FORB> ORBVocabulary;
+typedef DBoW2::TemplatedVocabulary<DBoW2::FORB, 10> ORBVocabulary;
 
 class Timer {
 public:
