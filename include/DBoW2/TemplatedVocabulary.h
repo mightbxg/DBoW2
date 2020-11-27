@@ -250,6 +250,12 @@ public:
    */
     void saveToBinaryFile(const std::string& filename) const;
 
+    /// save to fix-sized binary file
+    bool saveToFsBinFile(const std::string& filename) const;
+
+    /// load from fix-sized binary file
+    bool loadFromFsBinFile(const std::string& filename);
+
     /**
    * Saves the vocabulary into a file
    * @param filename
@@ -1507,6 +1513,58 @@ void TemplatedVocabulary<F, K>::saveToBinaryFile(const std::string& filename) co
     }
 
     ofs.close();
+}
+
+// --------------------------------------------------------------------------
+
+template <class F, int K>
+bool TemplatedVocabulary<F, K>::saveToFsBinFile(const std::string& filename) const
+{
+    if (m_nodes.empty() || m_words.empty())
+        throw std::runtime_error("invalid vocabulary");
+    std::ofstream out(filename, std::ios::out | std::ios::binary);
+    if (!out)
+        return false;
+    out.write((char*)(&m_L), sizeof(m_L));
+    out.write((char*)(&m_weighting), sizeof(m_weighting));
+    out.write((char*)(&m_scoring), sizeof(m_scoring));
+    createScoringObject();
+
+    size_t num_nodes = m_nodes.size();
+    out.write((char*)(&num_nodes), sizeof(num_nodes));
+    out.write((char*)(&m_nodes[0]), sizeof(Node) * num_nodes);
+    size_t num_words = m_words.size();
+    out.write((char*)(&num_words), sizeof(num_words));
+    std::vector<unsigned int> word_idx(num_words);
+    for (size_t i = 0; i < num_words; ++i)
+        word_idx[i] = m_words[i]->id;
+    out.write((char*)(&word_idx[0]), sizeof(unsigned int) * num_words);
+    return true;
+}
+
+// --------------------------------------------------------------------------
+
+template <class F, int K>
+bool TemplatedVocabulary<F, K>::loadFromFsBinFile(const std::string& filename)
+{
+    std::ifstream in(filename, std::ios::in | std::ios::binary);
+    if (!in)
+        return false;
+    in.read((char*)(&m_L), sizeof(m_L));
+    in.read((char*)(&m_weighting), sizeof(m_weighting));
+    in.read((char*)(&m_scoring), sizeof(m_scoring));
+    size_t num_nodes = m_nodes.size();
+    in.read((char*)(&num_nodes), sizeof(num_nodes));
+    m_nodes.resize(num_nodes);
+    in.read((char*)(&m_nodes[0]), sizeof(Node) * num_nodes);
+    size_t num_words = m_words.size();
+    in.read((char*)(&num_words), sizeof(num_words));
+    std::vector<unsigned int> word_idx(num_words);
+    in.read((char*)(&word_idx[0]), sizeof(unsigned int) * num_words);
+    m_words.resize(num_words);
+    for (size_t i = 0; i < num_words; ++i)
+        m_words[i] = &(m_nodes[word_idx[i]]);
+    return true;
 }
 
 // --------------------------------------------------------------------------
