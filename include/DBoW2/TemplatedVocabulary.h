@@ -1449,9 +1449,7 @@ void TemplatedVocabulary<F, K>::loadFromBinaryFile(const std::string& filename)
 
         m_nodes.at(n_id).parent = *ptr;
         m_nodes.at(m_nodes.at(n_id).parent).addChild(n_id);
-        m_nodes.at(n_id).descriptor = cv::Mat(1, F::L, CV_8U);
-
-        memcpy(m_nodes.at(n_id).descriptor.data, buf + 4, F::L);
+        memcpy(&(m_nodes.at(n_id).descriptor), buf + 4, F::L);
         m_nodes.at(n_id).weight = *reinterpret_cast<float*>(buf + 4 + F::L);
 
         if (buf[8 + F::L]) {
@@ -1499,7 +1497,7 @@ void TemplatedVocabulary<F, K>::saveToBinaryFile(const std::string& filename) co
         const Node& node = m_nodes.at(i);
 
         ofs.write((char*)&node.parent, sizeof(node.parent));
-        ofs.write((char*)node.descriptor.data, F::L);
+        ofs.write((char*)(&(node.descriptor)), F::L);
 
         const float weight = node.weight;
         ofs.write((char*)&weight, sizeof(weight));

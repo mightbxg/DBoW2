@@ -9,6 +9,7 @@
 #ifndef __D_T_FORB__
 #define __D_T_FORB__
 
+#include <bitset>
 #include <string>
 #include <vector>
 
@@ -31,9 +32,10 @@ class DLL_EXPORT FORB : protected FClass {
 public:
     //! Descriptor length (in bytes)
     static constexpr int L = 32;
+    static constexpr int L_bits = L * 8;
 
     //! Descriptor type
-    using TDescriptor = cv::Mat;
+    using TDescriptor = std::bitset<L_bits>;
     //! Pointer to a single descriptor
     using pDescriptor = const TDescriptor*;
 
