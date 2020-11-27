@@ -18,15 +18,15 @@
 #include "DBoW2/TemplatedVocabulary.h"
 
 //! ORB Vocabulary
-using OrbVocabulary = DBoW2::TemplatedVocabulary<DBoW2::FORB::TDescriptor, DBoW2::FORB>;
+using OrbVocabulary = DBoW2::TemplatedVocabulary<DBoW2::FORB, 10>;
 
 //! ORB Database
-using OrbDatabase = DBoW2::TemplatedDatabase<DBoW2::FORB::TDescriptor, DBoW2::FORB>;
+using OrbDatabase = DBoW2::TemplatedDatabase<DBoW2::FORB, 10>;
 
 //! BRIEF Vocabulary
-using BriefVocabulary = DBoW2::TemplatedVocabulary<DBoW2::FBRIEF::TDescriptor, DBoW2::FBRIEF>;
+using BriefVocabulary = DBoW2::TemplatedVocabulary<DBoW2::FBRIEF, 10>;
 
 //! BRIEF Database
-using BriefDatabase = DBoW2::TemplatedDatabase<DBoW2::FBRIEF::TDescriptor, DBoW2::FBRIEF>;
+using BriefDatabase = DBoW2::TemplatedDatabase<DBoW2::FBRIEF, 10>;
 
 #endif
