@@ -306,12 +306,12 @@ protected:
     struct Node {
         //! Node id
         NodeId id;
+        //! Parent node (undefined in case of root)
+        NodeId parent;
         //! Weight if the node is a word
         WordValue weight;
         //! Children
         std::array<NodeId, K> children;
-        //! Parent node (undefined in case of root)
-        NodeId parent;
         //! Node descriptor
         TDescriptor descriptor;
 
@@ -1528,8 +1528,6 @@ bool TemplatedVocabulary<F, K>::saveToFsBinFile(const std::string& filename) con
     out.write((char*)(&m_L), sizeof(m_L));
     out.write((char*)(&m_weighting), sizeof(m_weighting));
     out.write((char*)(&m_scoring), sizeof(m_scoring));
-    createScoringObject();
-
     size_t num_nodes = m_nodes.size();
     out.write((char*)(&num_nodes), sizeof(num_nodes));
     out.write((char*)(&m_nodes[0]), sizeof(Node) * num_nodes);
@@ -1553,6 +1551,8 @@ bool TemplatedVocabulary<F, K>::loadFromFsBinFile(const std::string& filename)
     in.read((char*)(&m_L), sizeof(m_L));
     in.read((char*)(&m_weighting), sizeof(m_weighting));
     in.read((char*)(&m_scoring), sizeof(m_scoring));
+    createScoringObject();
+
     size_t num_nodes = m_nodes.size();
     in.read((char*)(&num_nodes), sizeof(num_nodes));
     m_nodes.resize(num_nodes);
