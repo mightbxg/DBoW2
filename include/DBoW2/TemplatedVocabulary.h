@@ -304,7 +304,6 @@ protected:
         WordValue weight;
         //! Children
         std::array<NodeId, K> children;
-        std::size_t children_num { 0 };
         //! Parent node (undefined in case of root)
         NodeId parent;
         //! Node descriptor
@@ -319,7 +318,6 @@ protected:
         Node()
             : id(0)
             , weight(0)
-            , children_num(0)
             , parent(0)
             , word_id(0)
         {
@@ -332,7 +330,6 @@ protected:
         Node(const NodeId _id)
             : id(_id)
             , weight(0)
-            , children_num(0)
             , parent(0)
             , word_id(0)
         {
@@ -342,13 +339,17 @@ protected:
      * Returns whether the node is a leaf node
      * @return true iff the node is a leaf
      */
-        inline bool isLeaf() const { return children_num == 0; }
+        inline bool isLeaf() const { return !(children[0]); }
 
         inline void addChild(NodeId id)
         {
-            if (children_num >= K)
-                throw std::runtime_error("max children reached");
-            children[children_num++] = id;
+            for (int i = 0; i < K; ++i) {
+                if (!children[i]) {
+                    children[i] = id;
+                    return;
+                }
+            }
+            throw std::runtime_error("add child failed");
         }
     };
 
@@ -1203,13 +1204,13 @@ void TemplatedVocabulary<F, K>::transform(const TDescriptor& feature, WordId& wo
     do {
         ++current_level;
         nodes = m_nodes[final_id].children;
-        const int ch_num = m_nodes[final_id].children_num;
         final_id = nodes[0];
 
         double best_d = F::distance(feature, m_nodes[final_id].descriptor);
 
-        for (int i = 0; i < ch_num; ++i) {
-            NodeId id = nodes[i];
+        for (NodeId id : nodes) {
+            if (!id)
+                break;
             double d = F::distance(feature, m_nodes[id].descriptor);
             if (d < best_d) {
                 best_d = d;
@@ -1261,10 +1262,10 @@ void TemplatedVocabulary<F, K>::getWordsFromNode(const NodeId nid, std::vector<W
             parents.pop_back();
 
             const auto& child_ids = m_nodes[parentid].children;
-            const int ch_num = m_nodes[parentid].children_num;
 
-            for (int i = 0; i < ch_num; ++i) {
-                NodeId id = child_ids[i];
+            for (NodeId id : child_ids) {
+                if (!id)
+                    break;
                 const Node& child_node = m_nodes[id];
 
                 if (child_node.isLeaf())
@@ -1589,10 +1590,10 @@ void TemplatedVocabulary<F, K>::save(cv::FileStorage& f,
 
         const Node& parent = m_nodes[pid];
         children = parent.children;
-        int ch_num = parent.children_num;
 
-        for (int i = 0; i < ch_num; ++i) {
-            NodeId id = children[i];
+        for (NodeId id : children) {
+            if (!id)
+                break;
             const Node& child = m_nodes[id];
 
             // save node data
