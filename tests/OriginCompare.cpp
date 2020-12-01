@@ -84,36 +84,39 @@ int main(int argc, char* argv[])
         cout << "input: bin fsbin" << endl;
         return 0;
     }
+    auto time_start = high_resolution_clock::now();
+    auto timerStart = [&time_start] {
+        time_start = high_resolution_clock::now();
+    };
+    auto timerEnd = [&time_start](const string& msg) {
+        auto time_end = high_resolution_clock::now();
+        double time_cost = duration_cast<nanoseconds>(time_end - time_start).count() * 1e-6;
+        cout << msg << ": " << time_cost << " ms" << endl;
+    };
 
     cout << "time of loading volcabulary -----------" << endl;
     ORBVocabularyOrigin voc_origin;
     {
-        auto time_start = high_resolution_clock::now();
+        timerStart();
         voc_origin.loadFromBinaryFile(argv[1]);
-        auto time_end = high_resolution_clock::now();
-        double time_cost = duration_cast<nanoseconds>(time_end - time_start).count() * 1e-6;
-        cout << "origin: " << time_cost << " ms" << endl;
+        timerEnd("origin");
     }
     ORBVocabulary voc_bin;
     {
-        auto time_start = high_resolution_clock::now();
+        timerStart();
         voc_bin.loadFromBinaryFile(argv[1]);
-        auto time_end = high_resolution_clock::now();
-        double time_cost = duration_cast<nanoseconds>(time_end - time_start).count() * 1e-6;
-        cout << "bin  : " << time_cost << " ms" << endl;
+        timerEnd("  bin");
     }
     ORBVocabulary voc_fsbin;
     {
-        auto time_start = high_resolution_clock::now();
+        timerStart();
         voc_fsbin.loadFromFsBinFile(argv[2]);
-        auto time_end = high_resolution_clock::now();
-        double time_cost = duration_cast<nanoseconds>(time_end - time_start).count() * 1e-6;
-        cout << "fsbin: " << time_cost << " ms" << endl;
+        timerEnd("fsbin");
     }
 
     cout << "transform test ------------------------" << endl;
     // generate descriptors
-    constexpr int test_num = 1000;
+    constexpr int test_num = 10000;
     vector<ORBVocabulary::TDescriptor> descs;
     vector<cv::Mat> descs_org;
     descs.reserve(test_num);
@@ -127,15 +130,21 @@ int main(int argc, char* argv[])
         // origin
         origin::BowVector bv_origin;
         origin::FeatureVector fv_origin;
+        timerStart();
         voc_origin.transform(descs_org, bv_origin, fv_origin, levelsup);
+        timerEnd("origin");
         // bin
         DBoW2::BowVector bv_bin;
         DBoW2::FeatureVector fv_bin;
+        timerStart();
         voc_bin.transform(descs, bv_bin, fv_bin, levelsup);
+        timerEnd("  bin");
         // fsbin
         DBoW2::BowVector bv_fsbin;
         DBoW2::FeatureVector fv_fsbin;
+        timerStart();
         voc_fsbin.transform(descs, bv_fsbin, fv_fsbin, levelsup);
+        timerEnd("fsbin");
 
         // compare
         const string str_matched = "\33[32mmatched\33[0m";
