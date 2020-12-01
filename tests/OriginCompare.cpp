@@ -113,7 +113,7 @@ int main(int argc, char* argv[])
 
     cout << "transform test ------------------------" << endl;
     // generate descriptors
-    constexpr int test_num = 10000;
+    constexpr int test_num = 1000;
     vector<ORBVocabulary::TDescriptor> descs;
     vector<cv::Mat> descs_org;
     descs.reserve(test_num);
@@ -123,7 +123,7 @@ int main(int argc, char* argv[])
         descs_org.emplace_back(bitset2Mat(descs.back()));
     }
     auto transformTest = [&](int levelsup) {
-        cout << "levelsup = " << levelsup << endl;
+        cout << "\33[33mlevelsup = " << levelsup << "\33[0m" << endl;
         // origin
         origin::BowVector bv_origin;
         origin::FeatureVector fv_origin;
@@ -136,7 +136,17 @@ int main(int argc, char* argv[])
         DBoW2::BowVector bv_fsbin;
         DBoW2::FeatureVector fv_fsbin;
         voc_fsbin.transform(descs, bv_fsbin, fv_fsbin, levelsup);
+
+        // compare
+        const string str_matched = "\33[32mmatched\33[0m";
+        const string str_unmatched = "\33[31mUNMATCHED\33[0m";
+        cout << "BowVector of bin: " << (compareBowVector(bv_origin, bv_bin) ? str_matched : str_unmatched) << endl;
+        cout << "FeatureVector of bin: " << (compareFeatureVector(fv_origin, fv_bin) ? str_matched : str_unmatched) << endl;
+        cout << "BowVector of fsbin: " << (compareBowVector(bv_origin, bv_fsbin) ? str_matched : str_unmatched) << endl;
+        cout << "FeatureVector of fsbin: " << (compareFeatureVector(fv_origin, fv_fsbin) ? str_matched : str_unmatched) << endl;
     };
+    transformTest(4);
+    transformTest(0);
 
     return 0;
 }
