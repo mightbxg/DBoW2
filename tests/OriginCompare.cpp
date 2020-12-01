@@ -1,5 +1,7 @@
 #include "DBoW2/FORB.h"
 #include "DBoW2/TemplatedVocabulary.h"
+#include "origin/FORB.h"
+#include "origin/TemplatedVocabulary.h"
 #include <chrono>
 #include <iostream>
 

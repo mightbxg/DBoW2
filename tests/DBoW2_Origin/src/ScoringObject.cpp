@@ -8,8 +8,8 @@
  */
 
 #include <cfloat>
-#include "TemplatedVocabulary.h"
-#include "BowVector.h"
+#include "origin/TemplatedVocabulary.h"
+#include "origin/BowVector.h"
 
 using namespace origin;
 

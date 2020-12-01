@@ -13,7 +13,7 @@
 #include <iostream>
 #include <vector>
 
-#include "BowVector.h"
+#include "origin/BowVector.h"
 
 namespace origin {
 

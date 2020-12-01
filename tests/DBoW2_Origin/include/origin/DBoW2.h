@@ -45,33 +45,31 @@
 #define __D_T_DBOW2__
 
 /// Includes all the data structures to manage vocabularies and image databases
-namespace origin
-{
+namespace origin {
 }
 
-#include "TemplatedVocabulary.h"
-#include "TemplatedDatabase.h"
 #include "BowVector.h"
-#include "FeatureVector.h"
-#include "QueryResults.h"
 #include "FBrief.h"
 #include "FORB.h"
+#include "FeatureVector.h"
+#include "QueryResults.h"
+#include "TemplatedDatabase.h"
+#include "TemplatedVocabulary.h"
 
 /// ORB Vocabulary
-typedef DBoW2::TemplatedVocabulary<DBoW2::FORB::TDescriptor, DBoW2::FORB> 
-  OrbVocabulary;
+typedef origin::TemplatedVocabulary<origin::FORB::TDescriptor, origin::FORB>
+    OrbVocabulary;
 
 /// FORB Database
-typedef DBoW2::TemplatedDatabase<DBoW2::FORB::TDescriptor, DBoW2::FORB> 
-  OrbDatabase;
-  
+typedef origin::TemplatedDatabase<origin::FORB::TDescriptor, origin::FORB>
+    OrbDatabase;
+
 /// BRIEF Vocabulary
-typedef DBoW2::TemplatedVocabulary<DBoW2::FBrief::TDescriptor, DBoW2::FBrief> 
-  BriefVocabulary;
+typedef origin::TemplatedVocabulary<origin::FBrief::TDescriptor, origin::FBrief>
+    BriefVocabulary;
 
 /// BRIEF Database
-typedef DBoW2::TemplatedDatabase<DBoW2::FBrief::TDescriptor, DBoW2::FBrief> 
-  BriefDatabase;
+typedef origin::TemplatedDatabase<origin::FBrief::TDescriptor, origin::FBrief>
+    BriefDatabase;
 
 #endif
-

@@ -9,4 +9,5 @@ set(SRCS
 add_library(origin STATIC ${HDRS} ${SRCS})
 add_library(DBoW2::origin ALIAS origin)
 target_link_libraries(origin PUBLIC ${OpenCV_LIBS})
-target_include_directories(origin PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/origin)
+target_include_directories(origin
+    PUBLIC  "${CMAKE_CURRENT_SOURCE_DIR}/include")

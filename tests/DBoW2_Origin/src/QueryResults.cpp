@@ -9,7 +9,7 @@
 
 #include <iostream>
 #include <fstream>
-#include "QueryResults.h"
+#include "origin/QueryResults.h"
 
 using namespace std;
 

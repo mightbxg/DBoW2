@@ -1,4 +1,4 @@
 add_subdirectory(DBoW2_Origin)
 
-add_executable(LoadVocabulary LoadVocabulary.cpp)
-target_link_libraries(LoadVocabulary DBoW2)
+add_executable(OriginCompare OriginCompare.cpp)
+target_link_libraries(OriginCompare DBoW2 DBoW2::origin)
