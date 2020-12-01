@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef __D_T_FCLASS__
-#define __D_T_FCLASS__
+#ifndef __D_T_ORIGINFCLASS__
+#define __D_T_ORIGINFCLASS__
 
 #include <opencv2/core.hpp>
 #include <vector>

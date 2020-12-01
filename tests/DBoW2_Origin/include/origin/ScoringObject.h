@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef __D_T_SCORING_OBJECT__
-#define __D_T_SCORING_OBJECT__
+#ifndef __D_T_ORIGINSCORING_OBJECT__
+#define __D_T_ORIGINSCORING_OBJECT__
 
 #include "BowVector.h"
 

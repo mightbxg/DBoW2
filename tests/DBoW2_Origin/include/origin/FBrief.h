@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef __D_T_F_BRIEF__
-#define __D_T_F_BRIEF__
+#ifndef __D_T_ORIGINF_BRIEF__
+#define __D_T_ORIGINF_BRIEF__
 
 #include <opencv2/core.hpp>
 #include <bitset>

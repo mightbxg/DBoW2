@@ -41,8 +41,8 @@
  *
  */
 
-#ifndef __D_T_DBOW2__
-#define __D_T_DBOW2__
+#ifndef __D_T_ORIGINDBOW2__
+#define __D_T_ORIGINDBOW2__
 
 /// Includes all the data structures to manage vocabularies and image databases
 namespace origin {

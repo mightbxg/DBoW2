@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef __D_T_QUERY_RESULTS__
-#define __D_T_QUERY_RESULTS__
+#ifndef __D_T_ORIGINQUERY_RESULTS__
+#define __D_T_ORIGINQUERY_RESULTS__
 
 #include <vector>
 

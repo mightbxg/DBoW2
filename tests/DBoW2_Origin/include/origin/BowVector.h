@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef __D_T_BOW_VECTOR__
-#define __D_T_BOW_VECTOR__
+#ifndef __D_T_ORIGINBOW_VECTOR__
+#define __D_T_ORIGINBOW_VECTOR__
 
 #include <iostream>
 #include <map>

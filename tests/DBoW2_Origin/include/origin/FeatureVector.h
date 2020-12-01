@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef __D_T_FEATURE_VECTOR__
-#define __D_T_FEATURE_VECTOR__
+#ifndef __D_T_ORIGINFEATURE_VECTOR__
+#define __D_T_ORIGINFEATURE_VECTOR__
 
 #include "BowVector.h"
 #include <map>

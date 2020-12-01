@@ -7,8 +7,8 @@
  *
  */
  
-#ifndef __D_T_TEMPLATED_DATABASE__
-#define __D_T_TEMPLATED_DATABASE__
+#ifndef __D_T_ORIGINTEMPLATED_DATABASE__
+#define __D_T_ORIGINTEMPLATED_DATABASE__
 
 #include <vector>
 #include <numeric>

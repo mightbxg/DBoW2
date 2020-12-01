@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef __D_T_F_ORB__
-#define __D_T_F_ORB__
+#ifndef __D_T_ORIGINF_ORB__
+#define __D_T_ORIGINF_ORB__
 
 #include <opencv2/core.hpp>
 #include <vector>
@@ -19,7 +19,7 @@
 namespace origin {
 
 /// Functions to manipulate BRIEF descriptors
-class FORB
+class FORB: protected FClass
 {
 public:
 

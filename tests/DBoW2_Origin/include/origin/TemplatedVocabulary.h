@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef __D_T_TEMPLATED_VOCABULARY__
-#define __D_T_TEMPLATED_VOCABULARY__
+#ifndef __D_T_ORIGINTEMPLATED_VOCABULARY__
+#define __D_T_ORIGINTEMPLATED_VOCABULARY__
 
 #include <cassert>
 #include <cstdlib>
