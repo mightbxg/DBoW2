@@ -53,6 +53,31 @@ static bool compareBowVector(const T1& bv1, T2& bv2)
     return true;
 }
 
+template <typename Int1, typename Int2>
+static bool compareIntVector(const vector<Int1>& vec1, const vector<Int2>& vec2)
+{
+    if (vec1.size() != vec2.size())
+        return false;
+    for (size_t i = 0; i < vec1.size(); ++i)
+        if (vec1[i] != vec2[i])
+            return false;
+    return true;
+}
+
+// map<uint, vector<uint>>
+template <typename T1, typename T2>
+static bool compareFeatureVector(const T1& fv1, const T2& fv2)
+{
+    if (fv1.size() != fv2.size())
+        return false;
+    for (const auto& fe : fv1) {
+        auto q = fv2.find(fe.first);
+        if (fv2.end() == q || !compareIntVector(q->second, fe.second))
+            return false;
+    }
+    return true;
+}
+
 int main(int argc, char* argv[])
 {
     if (argc < 3) {
