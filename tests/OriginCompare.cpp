@@ -116,12 +116,13 @@ int main(int argc, char* argv[])
 
     cout << "transform test ------------------------" << endl;
     // generate descriptors
-    constexpr int test_num = 10000;
+    constexpr int num_descs = 10000;
+    cout << "num of descriptors: " << num_descs << endl;
     vector<ORBVocabulary::TDescriptor> descs;
     vector<cv::Mat> descs_org;
-    descs.reserve(test_num);
-    descs_org.reserve(test_num);
-    for (int i = 0; i < test_num; ++i) {
+    descs.reserve(num_descs);
+    descs_org.reserve(num_descs);
+    for (int i = 0; i < num_descs; ++i) {
         descs.push_back(getRandomBitset<256>());
         descs_org.emplace_back(bitset2Mat(descs.back()));
     }
